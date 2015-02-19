@@ -1,2 +1,5 @@
 
-mlclass-ex2-008/.DS_Store
+.DS_Store
+*.swp
+*.mat
+octave-workspace
