@@ -4,12 +4,6 @@ m = size(X, 1); % Number of training examples
 % You need to return the following variables correctly
 p = zeros(m, 1);
 
-prob = sigmoid(X * theta);
-
-for i = 1:m
-  if (prob(i) > 0.5) 
-    p(i) = 1;
-  endif
-endfor
+p = arrayfun( @(s) s > 0.5, sigmoid(X * theta) );
 
 end
