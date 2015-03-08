@@ -27,8 +27,6 @@ m = size(X, 1);
          
 % You need to return the following variables correctly 
 J = 0;
-Theta1_grad = zeros(size(Theta1));
-Theta2_grad = zeros(size(Theta2));
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
@@ -74,6 +72,33 @@ J = J + R;
 %               over the training examples if you are implementing it for the 
 %               first time.
 %
+
+Theta1_grad = zeros(size(Theta1));
+Theta2_grad = zeros(size(Theta2));
+
+for t = 1:m
+  % step 1: feed foreard 
+  a1 = X(t,:)';
+  z2 = Theta1 * a1;
+  a2 = [1 ; sigmoid(z2)];
+  z3 = Theta2 * a2;
+  a3 = sigmoid(z3);
+
+  % step 2
+  delta3 = a3 - (1:num_labels == y(t))';
+
+  % step 3
+  delta2 = Theta2'(2:end,:) * delta3 .* sigmoidGradient(z2);
+
+  % step 4
+  Theta2_grad = Theta2_grad + (delta3 * a2');
+  Theta1_grad = Theta1_grad + (delta2 * a1');
+
+end
+
+Theta2_grad = Theta2_grad .* (1/m);
+Theta1_grad = Theta1_grad .* (1/m);
+
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
@@ -82,6 +107,8 @@ J = J + R;
 %               and Theta2_grad from Part 2.
 %
 
+Theta2_grad(:,2:end) = Theta2_grad(:,2:end) + (lambda / m) * Theta2(:,2:end);
+Theta1_grad(:,2:end) = Theta1_grad(:,2:end) + (lambda / m) * Theta1(:,2:end);
 
 
 % -------------------------------------------------------------
