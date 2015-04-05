@@ -11,7 +11,6 @@ X = reshape(params(1:num_movies*num_features), num_movies, num_features);
 Theta = reshape(params(num_movies*num_features+1:end), ...
                 num_users, num_features);
 
-            
 % You need to return the following values correctly
 J = 0;
 X_grad = zeros(size(X));
@@ -41,7 +40,22 @@ Theta_grad = zeros(size(Theta));
 %
 
 P = X * Theta';
-J = 1/2 * sum(sum((((P - Y) .* R) .^ 2)));
+J = 1/2 * sum(sum((((P - Y) .* R) .^ 2))) + (lambda / 2) * sum(sum(Theta .^ 2)) + (lambda / 2) * sum(sum(X .^ 2));
+
+for i = 1:num_movies
+    idx = find(R(i,:)==1); % users that have rated movie i
+    Theta_temp = Theta(idx,:);
+    Y_temp = Y(i,idx);
+    X_grad(i,:) = ( X(i,:) * Theta_temp' - Y_temp ) * Theta_temp + (lambda * X(i,:));
+end
+
+for j = 1:num_users
+    idx = find(R(:,j)==1); % movies rated by user j
+    X_temp = X(idx,:);
+    Y_temp = Y(idx,j);
+    Theta_grad(j,:) = ( Theta(j,:) * X_temp' - Y_temp'  ) * X_temp + (lambda * Theta(j,:));
+
+end
 
 % =============================================================
 
